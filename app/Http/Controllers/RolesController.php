@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Routes;
 use App\Models\Roles;
+use App\Models\Permission;
 use DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,6 +20,111 @@ class RolesController extends Controller
     {
         $data["items"] = Roles::getActive();
         return response()->json($data);
+    }
+
+    public function getPermission($id)
+    {
+        $permission = Permission::where("s_role_id", $id)->get()->toArray();
+        
+        $routes = Routes::where("route_aktif", "y")->get()->toArray();
+        $dataRoutes = [];
+
+        $lv1 = array_filter($routes, function ($var) {
+            return $var["route_level"] == 1;
+        });
+
+        $lv2 = array_filter($routes, function ($var) {
+            return $var["route_level"] == 2;
+        });
+
+        foreach ($lv1 as $key => $value) {
+            $route_id = $value["route_id"];
+            $dataChildren = array_filter($lv2, function ($var) use ($route_id) {
+                return $var["s_route_id"] == $route_id;
+            });
+
+            $children = [];
+            foreach ($dataChildren as $key2 => $value2) {
+                $route_id2 = $value2["route_id"];
+                $permissionExist = array_filter($permission, function ($var) use ($route_id2)
+                {
+                    return $var["s_route_id"] == $route_id2;
+                });
+
+                $create  = "t";
+                $read  = "t";
+                $update  = "t";
+                $delete  = "t";
+                $permission_id = 0;
+                if (!empty($permissionExist)) {
+                    $permissionExist = array_values($permissionExist);
+                    $permissionExist = $permissionExist[0];
+                    
+                    $create = $permissionExist["create"];
+                    $read = $permissionExist["read"];
+                    $update = $permissionExist["update"];
+                    $delete = $permissionExist["delete"];
+                    $permission_id = $permissionExist["permission_id"];
+
+                    $children[] = [
+                        "permission_id" => $permission_id,
+                        "route_id"    => $value2["route_id"],
+                        "route_level" => $value2["route_level"],
+                        "path"        => $value2["route_path"],
+                        "s_route_id"  => $value2["s_route_id"],
+                        "create" => $create,
+                        "read"   => $read,
+                        "update" => $update,
+                        "delete" => $delete,
+                        "meta" => [
+                            "title"     => $value2["route_title"],
+                            "hidden"    => $value2["route_hidden"] == "y" ? true : false,
+                            "alwaysShow" => $value2["route_alwaysshow"] == "y" ? true : false,
+                        ]
+                    ];
+                }
+            }
+
+            $permissionExist = array_filter($permission, function ($var) use ($route_id)
+            {
+                return $var["s_route_id"] == $route_id;
+            });
+
+            $create  = "t";
+            $read  = "t";
+            $update  = "t";
+            $delete  = "t";
+            $permission_id = 0;
+            if (!empty($permissionExist)) {
+                $permissionExist = array_values($permissionExist);
+                $permissionExist = $permissionExist[0];
+                
+                $create = $permissionExist["create"];
+                $read = $permissionExist["read"];
+                $update = $permissionExist["update"];
+                $delete = $permissionExist["delete"];
+                $permission_id = $permissionExist["permission_id"];
+
+                $dataRoutes[] = [
+                    "permission_id" => $permission_id,
+                    "route_id"    => $route_id,
+                    "route_level" => $value["route_level"],
+                    "path"  => $value["route_path"],
+                    "create" => $create,
+                    "read"   => $read,
+                    "update" => $update,
+                    "delete" => $delete,
+                    "meta" => [
+                        "title"     => $value["route_title"],
+                        "hidden"    => $value["route_hidden"] == "y" ? true : false,
+                        "alwaysShow" => $value["route_alwaysshow"] == "y" ? true : false,
+                    ],
+                    "children" => $children
+                ];
+            }
+        }
+
+        return response()->json($dataRoutes);
     }
 
     public function getRoutes(Request $request)
@@ -43,9 +149,15 @@ class RolesController extends Controller
             $children = [];
             foreach ($dataChildren as $key2 => $value2) {
                 $children[] = [
+                    "permission_id" => 0,
                     "route_id"    => $value2["route_id"],
                     "route_level" => $value2["route_level"],
                     "path"  => $value2["route_path"],
+                    "s_route_id" => $value2["s_route_id"],
+                    "create" => "t",
+                    "read"   => "t",
+                    "update" => "t",
+                    "delete" => "t",
                     "meta" => [
                         "title"     => $value2["route_title"],
                         "hidden"    => $value2["route_hidden"] == "y" ? true : false,
@@ -55,9 +167,14 @@ class RolesController extends Controller
             }
 
             $dataRoutes[] = [
+                "permission_id" => 0,
                 "route_id"    => $route_id,
                 "route_level" => $value["route_level"],
                 "path"  => $value["route_path"],
+                "create" => "t",
+                "read"   => "t",
+                "update" => "t",
+                "delete" => "t",
                 "meta" => [
                     "title"     => $value["route_title"],
                     "hidden"    => $value["route_hidden"] == "y" ? true : false,
@@ -85,14 +202,24 @@ class RolesController extends Controller
             ), 400);
         }
         
-        $dataSave = new Roles();
+        try {
+            $dataSave = new Roles();
 
-        $dataSave->role_nama = $input["role_nama"];
-        $dataSave->role_keterangan = $input["role_keterangan"];
-        $dataSave->created_by = auth()->user()->user_id;
-        $dataSave->created_date = date("Y-m-d H:i:s");
-        $dataSave->save();
-        $dataSave->role_id = $dataSave->role_id;
+            $dataSave->role_nama = $input["role_nama"];
+            $dataSave->role_keterangan = $input["role_keterangan"];
+            $dataSave->created_by = auth()->user()->user_id;
+            $dataSave->created_date = date("Y-m-d H:i:s");
+            $dataSave->save();
+            $role_id = $dataSave->role_id;
+
+            $routes = $input["routes"];
+            $this->setPermission($role_id, $routes);
+
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
+
 
         return response()->json($dataSave);
     }
@@ -111,20 +238,70 @@ class RolesController extends Controller
                 'message' => $validator->getMessageBag()->toArray()
             ), 400);
         }
-        
+
         $role_id = $input["role_id"];
         $dataSave = Roles::find($role_id);
+        
+        try {
+            $dataSave->role_nama = $input["role_nama"];
+            $dataSave->role_keterangan = $input["role_keterangan"];
+            $dataSave->updated_by = auth()->user()->user_id;
+            $dataSave->updated_date = date("Y-m-d H:i:s");
+            $dataSave->revised = DB::raw("revised+1");
+    
+            $dataSave->save();
+    
+            $dataSave->role_id = $role_id;
+    
+            $routes = $input["routes"];
+            $this->setPermission($role_id, $routes);
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
 
-        $dataSave->role_nama = $input["role_nama"];
-        $dataSave->role_keterangan = $input["role_keterangan"];
-        $dataSave->updated_by = auth()->user()->user_id;
-        $dataSave->updated_date = date("Y-m-d H:i:s");
-        $dataSave->revised = DB::raw("revised+1");
 
-        $dataSave->save();
+        return response()->json($routes);
+    }
 
-        $dataSave->role_id = $role_id;
-        return response()->json($dataSave);
+    public function setPermission($role_id, $routes)
+    {
+        Permission::where("s_role_id", $role_id)->delete();
+        foreach ($routes as $key => $value) {
+                $permission = new Permission();
+                $permission->s_role_id  = $role_id;
+                $permission->s_route_id = $value["route_id"];
+                $permission->created_by = auth()->user()->user_id;
+                $permission->created_date = date("Y-m-d H:i:s");
+                $permission->read = "y";
+                $permission->save();
+
+            $children = $value["children"];
+            foreach ($children as $key2 => $value2) {
+                $permission = new Permission();
+                $permission->s_role_id  = $role_id;
+                $permission->s_route_id = $value2["route_id"];
+                $permission->created_by = auth()->user()->user_id;
+                $permission->created_date = date("Y-m-d H:i:s");
+                $permission->read = "y";
+                $permission->save();
+            }
+        }
+    }
+
+    public function deleteRoles($id)
+    {
+        $res["status"] = "success";
+        try {
+            $role = Roles::find($id);
+            $role->role_aktif = 't';
+            $role->save();
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
+
+        return response()->json($res);
     }
 
 }

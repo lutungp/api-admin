@@ -31,4 +31,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('routes', 'RolesController@getRoutes');
     $router->post('roles', 'RolesController@createRoles');
     $router->put('roles/{id}', 'RolesController@updateRoles');
+    $router->delete('roles/{id}', 'RolesController@deleteRoles');
+    $router->get('permission/{id}', 'RolesController@getPermission');
 });
