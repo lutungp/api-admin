@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use  App\User;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\JWTAuth;
 
 class AuthController extends Controller
 {
     /**
-     * Get a JWT via given credentials.
-     *
-     * @param  Request  $request
-     * @return Response
+     * @var \Tymon\JWTAuth\JWTAuth
      */
+    protected $jwt;
+
+    public function __construct(JWTAuth $jwt)
+    {
+        $this->jwt = $jwt;
+    }
+
     public function login(Request $request)
     {
           //validate incoming request 
@@ -43,6 +48,13 @@ class AuthController extends Controller
         ];
         
         return response()->json($data);
+    }
+
+    public function logout(Request $request)
+    {
+        $this->jwt->parseToken()->invalidate();
+		
+        return ['message'=>'token removed'] ;
     }
 
 }

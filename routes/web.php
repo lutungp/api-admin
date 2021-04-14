@@ -22,4 +22,11 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('users/login', 'AuthController@login');
     $router->post('users/info', 'AuthController@info');
+
+    $router->post('users/logout', 'AuthController@logout');
+
+    $router->get('transactions', 'TransController@getData');
+
+    $router->get('roles', 'RolesController@getRoles');
+    $router->get('routes', 'RolesController@getRoutes');
 });
