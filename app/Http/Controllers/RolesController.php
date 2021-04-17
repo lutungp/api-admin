@@ -43,6 +43,7 @@ class RolesController extends Controller
                 return $var["s_route_id"] == $route_id;
             });
 
+            $dataChildren = array_values($dataChildren);
             $children = [];
             foreach ($dataChildren as $key2 => $value2) {
                 $route_id2 = $value2["route_id"];
@@ -65,24 +66,25 @@ class RolesController extends Controller
                     $update = $permissionExist["update"];
                     $delete = $permissionExist["delete"];
                     $permission_id = $permissionExist["permission_id"];
-
-                    $children[] = [
-                        "permission_id" => $permission_id,
-                        "route_id"    => $value2["route_id"],
-                        "route_level" => $value2["route_level"],
-                        "path"        => $value2["route_path"],
-                        "s_route_id"  => $value2["s_route_id"],
-                        "create" => $create,
-                        "read"   => $read,
-                        "update" => $update,
-                        "delete" => $delete,
-                        "meta" => [
-                            "title"     => $value2["route_title"],
-                            "hidden"    => $value2["route_hidden"] == "y" ? true : false,
-                            "alwaysShow" => $value2["route_alwaysshow"] == "y" ? true : false,
-                        ]
-                    ];
                 }
+
+                $children[] = [
+                    "permission_id" => $permission_id,
+                    "route_id"    => $value2["route_id"],
+                    "route_level" => $value2["route_level"],
+                    "path"        => $value2["route_path"],
+                    "s_route_id"  => $value2["s_route_id"],
+                    "create" => $create == "y" ? true : false,
+                    "read"   => $read == "y" ? true : false,
+                    "update" => $update == "y" ? true : false,
+                    "delete" => $delete == "y" ? true : false,
+                    "meta" => [
+                        "title"     => $value2["route_title"],
+                        "hidden"    => $value2["route_hidden"] == "y" ? true : false,
+                        "alwaysShow" => $value2["route_alwaysshow"] == "y" ? true : false,
+                    ],
+                    "children" => []
+                ];
             }
 
             $permissionExist = array_filter($permission, function ($var) use ($route_id)
@@ -104,24 +106,24 @@ class RolesController extends Controller
                 $update = $permissionExist["update"];
                 $delete = $permissionExist["delete"];
                 $permission_id = $permissionExist["permission_id"];
-
-                $dataRoutes[] = [
-                    "permission_id" => $permission_id,
-                    "route_id"    => $route_id,
-                    "route_level" => $value["route_level"],
-                    "path"  => $value["route_path"],
-                    "create" => $create,
-                    "read"   => $read,
-                    "update" => $update,
-                    "delete" => $delete,
-                    "meta" => [
-                        "title"     => $value["route_title"],
-                        "hidden"    => $value["route_hidden"] == "y" ? true : false,
-                        "alwaysShow" => $value["route_alwaysshow"] == "y" ? true : false,
-                    ],
-                    "children" => $children
-                ];
             }
+
+            $dataRoutes[] = [
+                "permission_id" => $permission_id,
+                "route_id"    => $route_id,
+                "route_level" => $value["route_level"],
+                "path"  => $value["route_path"],
+                "create" => $create == "y" ? true : false,
+                "read"   => $read == "y" ? true : false,
+                "update" => $update == "y" ? true : false,
+                "delete" => $delete == "y" ? true : false,
+                "meta" => [
+                    "title"     => $value["route_title"],
+                    "hidden"    => $value["route_hidden"] == "y" ? true : false,
+                    "alwaysShow" => $value["route_alwaysshow"] == "y" ? true : false,
+                ],
+                "children" => $children
+            ];
         }
 
         return response()->json($dataRoutes);
@@ -154,15 +156,16 @@ class RolesController extends Controller
                     "route_level" => $value2["route_level"],
                     "path"  => $value2["route_path"],
                     "s_route_id" => $value2["s_route_id"],
-                    "create" => "t",
-                    "read"   => "t",
-                    "update" => "t",
-                    "delete" => "t",
+                    "create" => false,
+                    "read"   => false,
+                    "update" => false,
+                    "delete" => false,
                     "meta" => [
                         "title"     => $value2["route_title"],
                         "hidden"    => $value2["route_hidden"] == "y" ? true : false,
                         "alwaysShow" => $value2["route_alwaysshow"] == "y" ? true : false,
-                    ]
+                    ],
+                    "children" => []
                 ];
             }
 
@@ -171,10 +174,10 @@ class RolesController extends Controller
                 "route_id"    => $route_id,
                 "route_level" => $value["route_level"],
                 "path"  => $value["route_path"],
-                "create" => "t",
-                "read"   => "t",
-                "update" => "t",
-                "delete" => "t",
+                "create" => false,
+                "read"   => false,
+                "update" => false,
+                "delete" => false,
                 "meta" => [
                     "title"     => $value["route_title"],
                     "hidden"    => $value["route_hidden"] == "y" ? true : false,
@@ -273,7 +276,10 @@ class RolesController extends Controller
                 $permission->s_route_id = $value["route_id"];
                 $permission->created_by = auth()->user()->user_id;
                 $permission->created_date = date("Y-m-d H:i:s");
+                $permission->create = $value["create"] ? "y" : "t";
                 $permission->read = "y";
+                $permission->update = "y";
+                $permission->delete = "y";
                 $permission->save();
 
             $children = $value["children"];
@@ -283,7 +289,10 @@ class RolesController extends Controller
                 $permission->s_route_id = $value2["route_id"];
                 $permission->created_by = auth()->user()->user_id;
                 $permission->created_date = date("Y-m-d H:i:s");
-                $permission->read = "y";
+                $permission->create = $value["create"] ? "y" : "t";
+                $permission->read = $value["read"] ? "y" : "t";
+                $permission->update = $value["update"] ? "y" : "t";
+                $permission->delete = $value["delete"] ? "y" : "t";
                 $permission->save();
             }
         }
