@@ -19,4 +19,9 @@ class Roles extends Model
     {
         return Self::where("role_aktif", "y")->get();
     }
+
+    function permission(){
+		return $this->hasMany('App\Models\Permission', 's_role_id', 'role_id');
+	}
+    
 }

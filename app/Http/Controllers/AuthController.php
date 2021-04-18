@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use  App\User;
+use  App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\JWTAuth;
 
@@ -39,12 +39,17 @@ class AuthController extends Controller
     public function info(Request $request)
     {
         $user = auth()->user();
+        $dataUser = User::find($user->user_id);
+        $userinfo = $dataUser->info;
+        $userrole = $dataUser->role;
+
         $data["user"] = [
             "roles" => ['admin'],
-            "name"  => $user->name,
+            "name"  => $userinfo->userinfo_nama,
             "avatar" => "",
             "introduction" => "",
-            "email" => "lntngp19@gmail.com"
+            "email" => $userinfo->userinfo_email,
+            "permission" => $userrole->permission
         ];
         
         return response()->json($data);
