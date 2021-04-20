@@ -47,16 +47,16 @@ class AuthController extends Controller
         $dataPermission = [];
         foreach ($userpermission as $key => $value) {
             $dataPermission[] = [
-                "s_route_id" => $value->s_route_id,
+                "sRouteId" => $value->s_route_id,
                 "path" => $value->routes->route_path,
                 "create" => $value->create,
                 "read" => $value->read,
                 "update" => $value->update,
                 "delete" => $value->delete,
-                "permission_1" => $value->permission_1,
-                "permission_2" => $value->permission_2,
-                "permission_3" => $value->permission_3,
-                "permission_4" => $value->permission_4,
+                "permission1" => $value->permission_1,
+                "permission2" => $value->permission_2,
+                "permission3" => $value->permission_3,
+                "permission4" => $value->permission_4,
             ];
         }
 
