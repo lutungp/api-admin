@@ -43,13 +43,30 @@ class AuthController extends Controller
         $userinfo = $dataUser->info;
         $userrole = $dataUser->role;
 
+        $userpermission = $dataUser->role->permission;
+        $dataPermission = [];
+        foreach ($userpermission as $key => $value) {
+            $dataPermission[] = [
+                "s_route_id" => $value->s_route_id,
+                "path" => $value->routes->route_path,
+                "create" => $value->create,
+                "read" => $value->read,
+                "update" => $value->update,
+                "delete" => $value->delete,
+                "permission_1" => $value->permission_1,
+                "permission_2" => $value->permission_2,
+                "permission_3" => $value->permission_3,
+                "permission_4" => $value->permission_4,
+            ];
+        }
+
         $data["user"] = [
             "roles" => ['admin'],
             "name"  => $userinfo->userinfo_nama,
             "avatar" => "",
             "introduction" => "",
             "email" => $userinfo->userinfo_email,
-            "permission" => $userrole->permission
+            "permission" => $dataPermission
         ];
         
         return response()->json($data);

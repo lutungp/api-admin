@@ -21,7 +21,9 @@ class Roles extends Model
     }
 
     function permission(){
-		return $this->hasMany('App\Models\Permission', 's_role_id', 'role_id');
+		return $this->hasMany('App\Models\Permission', 's_role_id', 'role_id')
+                    ->select('s_route_id', 'create', 'update', 'read', 'delete', 
+                             'permission_1', 'permission_2', 'permission_3', 'permission_4');
 	}
     
 }

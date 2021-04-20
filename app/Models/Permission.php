@@ -14,4 +14,9 @@ class Permission extends Model
     protected $table = 's_permission';
     protected $primaryKey = 'permission_id';
     public $timestamps = false;
+
+    function routes(){
+      return $this->hasOne('App\Models\Routes', 'route_id', 's_route_id')
+                      ->where('route_aktif', 'y');
+    }
 }
