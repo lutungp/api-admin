@@ -17,13 +17,14 @@ class Roles extends Model
 
     public static function getActive()
     {
-        return Self::where("role_aktif", "y")->get();
+        return Self::select("role_id", "role_kode", "role_nama")
+                    ->where("role_aktif", "y")->get();
     }
 
     function permission(){
 		return $this->hasMany('App\Models\Permission', 's_role_id', 'role_id')
-                    ->select('s_route_id', 'create', 'update', 'read', 'delete', 
+                    ->select('s_route_id', 'create', 'update', 'read', 'delete',
                              'permission_1', 'permission_2', 'permission_3', 'permission_4');
 	}
-    
+
 }
