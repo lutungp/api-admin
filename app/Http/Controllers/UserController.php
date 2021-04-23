@@ -44,6 +44,8 @@ class UserController extends Controller
             'password' => 'required|min:3',
         ], [
             'name.required' => 'Nama tidak boleh kosong',
+            'name.min' => 'Nama minimal 3 karakter',
+            'name.max' => 'Nama maksimal 100 karakter',
             'password.required' => 'Password tidak boleh kosong',
             'password.min' => 'Password minimal 3 karakter',
         ]);
@@ -56,7 +58,7 @@ class UserController extends Controller
         }
 
         $res["status"] = "success";
-        // try {
+        try {
             $dataSave = new User();
 
             $dataSave->user_kode = $input["user_kode"];
@@ -68,10 +70,10 @@ class UserController extends Controller
             $dataSave->save();
             $user_id = $dataSave->user_id;
 
-        // } catch (\Throwable $th) {
-        //     $res["status"] = "failure";
-        //     return response()->json($res, 500);
-        // }
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
 
         return response()->json($dataSave);
     }
