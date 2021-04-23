@@ -15,7 +15,7 @@ class RolesController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     public function getRoles(Request $request)
     {
         $data["items"] = Roles::getActive();
@@ -25,7 +25,7 @@ class RolesController extends Controller
     public function getPermission($id)
     {
         $permission = Permission::where("s_role_id", $id)->get()->toArray();
-        
+
         $routes = Routes::where("route_aktif", "y")->get()->toArray();
         $dataRoutes = [];
 
@@ -60,7 +60,7 @@ class RolesController extends Controller
                 if (!empty($permissionExist)) {
                     $permissionExist = array_values($permissionExist);
                     $permissionExist = $permissionExist[0];
-                    
+
                     $create = $permissionExist["create"];
                     $read = $permissionExist["read"];
                     $update = $permissionExist["update"];
@@ -100,7 +100,7 @@ class RolesController extends Controller
             if (!empty($permissionExist)) {
                 $permissionExist = array_values($permissionExist);
                 $permissionExist = $permissionExist[0];
-                
+
                 $create = $permissionExist["create"];
                 $read = $permissionExist["read"];
                 $update = $permissionExist["update"];
@@ -204,7 +204,7 @@ class RolesController extends Controller
                 'message' => $validator->getMessageBag()->toArray()
             ), 400);
         }
-        
+
         try {
             $dataSave = new Roles();
 
@@ -244,25 +244,24 @@ class RolesController extends Controller
 
         $role_id = $input["role_id"];
         $dataSave = Roles::find($role_id);
-        
+
         try {
             $dataSave->role_nama = $input["role_nama"];
             $dataSave->role_keterangan = $input["role_keterangan"];
             $dataSave->updated_by = auth()->user()->user_id;
             $dataSave->updated_date = date("Y-m-d H:i:s");
             $dataSave->revised = DB::raw("revised+1");
-    
+
             $dataSave->save();
-    
+
             $dataSave->role_id = $role_id;
-    
+
             $routes = $input["routes"];
             $this->setPermission($role_id, $routes);
         } catch (\Throwable $th) {
             $res["status"] = "failure";
             return response()->json($res, 500);
         }
-
 
         return response()->json($routes);
     }
