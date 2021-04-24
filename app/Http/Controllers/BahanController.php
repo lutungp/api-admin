@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Barang;
+use App\Models\Bahan;
 use DB;
 use Illuminate\Support\Facades\Validator;
 
-class BarangController extends Controller
+class BahanController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    public function getBarang(Request $request)
+    public function getBahan(Request $request)
     {
-        $data["items"] = Barang::getActive();
+        $data["items"] = Bahan::getActive();
         return response()->json($data);
     }
 }

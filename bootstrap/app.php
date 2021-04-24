@@ -99,6 +99,7 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 
 $app->register(Fruitcake\Cors\CorsServiceProvider::class);
 
+$app->register(\KitLoong\MigrationsGenerator\MigrationsGeneratorServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

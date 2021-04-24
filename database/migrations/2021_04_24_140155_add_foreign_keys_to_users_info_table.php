@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddForeignKeysToUsersInfoTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('users_info', function (Blueprint $table) {
+            $table->foreign('s_user_id', 'lnk_users_users_info')->references('user_id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('users_info', function (Blueprint $table) {
+            $table->dropForeign('lnk_users_users_info');
+        });
+    }
+}
