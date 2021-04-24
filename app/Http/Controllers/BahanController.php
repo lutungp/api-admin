@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Bahan;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class BahanController extends Controller
 {
@@ -31,5 +32,115 @@ class BahanController extends Controller
         $data["total"] = $bahan->total();
 
         return response()->json($data);
+    }
+
+    public function createBahan(Request $request)
+    {
+        $input = $request["bahan"];
+
+        $validator = Validator::make($input, [
+            'bahan_nama' => 'required|min:3|max:25',
+                        Rule::unique('m_bahan')->where(function ($query) {
+                            $query->where('bahan_aktif', 'Y');
+                        }),
+            'm_satuan_id' => 'required',
+        ], [
+            'bahan_nama.required' => 'Nama Bahan tidak boleh kosong',
+            'bahan_nama.min' => 'Nama Bahan minimal 3 karakter',
+            'bahan_nama.max' => 'Nama Bahan maksimal 100 karakter',
+            'bahan_nama.unique' => 'Nama Bahan ' . $input['bahan_nama'] . ' telah digunakan, masukkan nama lain',
+            'm_satuan_id.required' => 'bahan Role tidak boleh kosong',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(array(
+                'status' => 'failure',
+                'message' => $validator->getMessageBag()->toArray()
+            ), 400);
+        }
+
+        $res["status"] = "success";
+        try {
+            $dataSave = new bahan();
+
+            $dataSave->bahan_kode = $input["bahan_kode"];
+            $dataSave->bahan_nama = $input["bahan_nama"];
+            $dataSave->m_satuan_id = $input["m_satuan_id"];
+            $dataSave->created_by = auth()->user()->user_id;
+            $dataSave->created_date = date("Y-m-d H:i:s");
+            $dataSave->save();
+            $bahan_id = $dataSave->bahan_id;
+
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
+
+        return response()->json($dataSave);
+    }
+
+
+    public function updateBahan(Request $request)
+    {
+        $input = $request["bahan"];
+
+        $bahan_id = $input["bahan_id"];
+        $validator = Validator::make($input, [
+            'bahan_nama' => 'required|min:3|max:25',
+                        Rule::unique('m_bahan')->where(function ($query, $bahan_id) {
+                            $query->where('bahan_id', $bahan_id)
+                                ->where('bahan_aktif', 'Y');
+                        }),
+            'm_satuan_id' => 'required',
+        ], [
+            'bahan_nama.required' => 'Nama Bahan tidak boleh kosong',
+            'bahan_nama.min' => 'Nama Bahan minimal 3 karakter',
+            'bahan_nama.max' => 'Nama Bahan maksimal 100 karakter',
+            'bahan_nama.unique' => 'Nama Bahan ' . $input['bahan_nama'] . ' telah digunakan, masukkan nama lain',
+            'm_satuan_id.required' => 'bahan Role tidak boleh kosong',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(array(
+                'status' => 'failure',
+                'message' => $validator->getMessageBag()->toArray()
+            ), 400);
+        }
+
+        $dataSave = Bahan::find($bahan_id);
+
+        $res["status"] = "success";
+        try {
+            $dataSave->bahan_kode = $input["bahan_kode"];
+            $dataSave->bahan_nama = $input["bahan_nama"];
+            $dataSave->m_satuan_id = $input["m_satuan_id"];
+            $dataSave->updated_by = auth()->user()->user_id;
+            $dataSave->updated_date = date("Y-m-d H:i:s");
+            $dataSave->revised = $dataSave->revised+1;
+
+            $dataSave->save();
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
+
+        return response()->json($res);
+    }
+
+    public function deleteBahan($id)
+    {
+        $res["status"] = "success";
+        try {
+            $bahan = Bahan::find($id);
+            $bahan->bahan_aktif = 't';
+            $bahan->disabled_by = auth()->user()->user_id;
+            $bahan->disabled_date = date("Y-m-d H:i:s");
+            $bahan->save();
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
+
+        return response()->json($res);
     }
 }

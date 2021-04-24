@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -112,7 +111,7 @@ class UserController extends Controller
             $dataSave->s_role_id = $input["s_role_id"];
             $dataSave->updated_by = auth()->user()->user_id;
             $dataSave->updated_date = date("Y-m-d H:i:s");
-            $dataSave->revised = DB::raw("revised+1");
+            $dataSave->revised = $dataSave->revised+1;
 
             $dataSave->save();
         } catch (\Throwable $th) {
@@ -130,6 +129,7 @@ class UserController extends Controller
             $user = User::find($id);
             $user->user_aktif = 't';
             $user->disabled_by = auth()->user()->user_id;
+            $bahan->disabled_date = date("Y-m-d H:i:s");
             $user->save();
         } catch (\Throwable $th) {
             $res["status"] = "failure";

@@ -303,6 +303,8 @@ class RolesController extends Controller
         try {
             $role = Roles::find($id);
             $role->role_aktif = 't';
+            $user->disabled_by = auth()->user()->user_id;
+            $bahan->disabled_date = date("Y-m-d H:i:s");
             $role->save();
         } catch (\Throwable $th) {
             $res["status"] = "failure";
