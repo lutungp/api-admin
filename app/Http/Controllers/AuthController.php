@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use  App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\JWTAuth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -21,11 +23,25 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-          //validate incoming request 
-        $this->validate($request, [
-            'name' => 'required|string',
-            'password' => 'required|string',
+        $input = $request->only('name', 'password');
+        $name = $input["name"];
+        //validate incoming request
+        $validator = Validator::make($input, [
+            'name' => 'required|exists:users,name,user_aktif,y',
+            'password' => 'required|string|min:3',
+        ], [
+            'name.required' => 'Username tidak boleh kosong',
+            'name.exist' => 'Username tidak dikenali',
+            'password.required' => 'Password tidak boleh kosong',
+            'password.min' => 'Password minimal 3 karakter'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(array(
+                'status' => 'failure',
+                'message' => $validator->getMessageBag()->toArray()
+            ), 400);
+        }
 
         $credentials = $request->only(['name', 'password']);
 
@@ -62,20 +78,20 @@ class AuthController extends Controller
 
         $data["user"] = [
             "roles" => ['admin'],
-            "name"  => $userinfo->userinfo_nama,
+            "name"  => isset($userinfo->userinfo_nama) ? $userinfo->userinfo_nama : "",
             "avatar" => "",
             "introduction" => "",
-            "email" => $userinfo->userinfo_email,
+            "email" => isset($userinfo->userinfo_email) ? $userinfo->userinfo_email : "",
             "permission" => $dataPermission
         ];
-        
+
         return response()->json($data);
     }
 
     public function logout(Request $request)
     {
         $this->jwt->parseToken()->invalidate();
-		
+
         return ['message'=>'token removed'] ;
     }
 
