@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        $users = User::paginate(20);
+        $users = User::where('user_aktif', 'y')->paginate(20);
         $dataUser  = [];
         foreach ($users->items() as $key => $value) {
             $dataUser[] = [
@@ -41,11 +41,14 @@ class UserController extends Controller
 
         $validator = Validator::make($input, [
             'name' => 'required|min:3|max:100|unique:users,name',
+            's_role_id' => 'required',
             'password' => 'required|min:3',
         ], [
             'name.required' => 'Nama tidak boleh kosong',
             'name.min' => 'Nama minimal 3 karakter',
             'name.max' => 'Nama maksimal 100 karakter',
+            'name.unique' => 'Nama ' . $input['name'] . ' telah digunakan, masukkan nama lain',
+            's_role_id.required' => 'User Role tidak boleh kosong',
             'password.required' => 'Password tidak boleh kosong',
             'password.min' => 'Password minimal 3 karakter',
         ]);
