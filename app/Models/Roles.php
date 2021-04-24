@@ -17,7 +17,7 @@ class Roles extends Model
 
     public static function getActive()
     {
-        return Self::select("role_id", "role_kode", "role_nama")
+        return Self::select("role_id", "role_kode", "role_nama", "role_keterangan")
                     ->where("role_aktif", "y")->get();
     }
 
