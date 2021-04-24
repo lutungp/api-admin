@@ -122,4 +122,20 @@ class UserController extends Controller
 
         return response()->json($res);
     }
+
+    public function deleteUsers($id)
+    {
+        $res["status"] = "success";
+        try {
+            $user = User::find($id);
+            $user->user_aktif = 't';
+            $user->disabled_by = auth()->user()->user_id;
+            $user->save();
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
+
+        return response()->json($res);
+    }
 }
