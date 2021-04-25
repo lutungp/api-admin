@@ -37,19 +37,19 @@ class BahanController extends Controller
     public function createBahan(Request $request)
     {
         $input = $request["bahan"];
-
+        $bahan_nama = $input["bahan_nama"];
         $validator = Validator::make($input, [
-            'bahan_nama' => 'required|min:3|max:25',
+            'bahan_nama' => ['required', 'max:25',
                         Rule::unique('m_bahan')->where(function ($query) {
-                            $query->where('bahan_aktif', 'Y');
-                        }),
+                            return $query->where('bahan_aktif', 'y');
+                        })],
             'm_satuan_id' => 'required',
         ], [
             'bahan_nama.required' => 'Nama Bahan tidak boleh kosong',
             'bahan_nama.min' => 'Nama Bahan minimal 3 karakter',
             'bahan_nama.max' => 'Nama Bahan maksimal 100 karakter',
             'bahan_nama.unique' => 'Nama Bahan ' . $input['bahan_nama'] . ' telah digunakan, masukkan nama lain',
-            'm_satuan_id.required' => 'bahan Role tidak boleh kosong',
+            'm_satuan_id.required' => 'Satuan tidak boleh kosong',
         ]);
 
         if ($validator->fails()) {
@@ -86,16 +86,17 @@ class BahanController extends Controller
 
         $bahan_id = $input["bahan_id"];
         $validator = Validator::make($input, [
-            'bahan_nama' => 'required|min:3|max:25',
-                        Rule::unique('m_bahan')->where(function ($query, $bahan_id) {
-                            $query->where('bahan_id', $bahan_id)
-                                ->where('bahan_aktif', 'Y');
-                        }),
+            'bahan_nama' => ['required', 'max:25',
+                        Rule::unique('m_bahan')->where(function ($query) use ($bahan_id) {
+                            return $query->where('bahan_id', '<>', $bahan_id)
+                                         ->where('bahan_aktif', 'y');
+                        })],
             'm_satuan_id' => 'required',
         ], [
             'bahan_nama.required' => 'Nama Bahan tidak boleh kosong',
             'bahan_nama.min' => 'Nama Bahan minimal 3 karakter',
-            'bahan_nama.max' => 'Nama Bahan maksimal 100 karakter',
+            'bahan_nama.max' => 'Nama Bahan maksimal 25 karakter',
+            'bahan_kode.unique' => 'Kode Bahan ' . $input['bahan_kode'] . ' telah digunakan, masukkan nama lain',
             'bahan_nama.unique' => 'Nama Bahan ' . $input['bahan_nama'] . ' telah digunakan, masukkan nama lain',
             'm_satuan_id.required' => 'bahan Role tidak boleh kosong',
         ]);
