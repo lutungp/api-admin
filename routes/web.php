@@ -48,4 +48,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('bahan', 'BahanController@createBahan');
     $router->put('bahan/{id}', 'BahanController@updateBahan');
     $router->delete('bahan/{id}', 'BahanController@deleteBahan');
+
+    $router->get('produk', 'ProdukController@getProduk');
+    $router->post('produk', 'ProdukController@createProduk');
+    $router->put('produk/{id}', 'ProdukController@updateProduk');
+    $router->delete('produk/{id}', 'ProdukController@deleteProduk');
 });

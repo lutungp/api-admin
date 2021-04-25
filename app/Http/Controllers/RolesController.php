@@ -263,36 +263,36 @@ class RolesController extends Controller
             return response()->json($res, 500);
         }
 
-        return response()->json($routes);
+        return response()->json($routes, 200);
     }
 
     public function setPermission($role_id, $routes)
     {
-        Permission::where("s_role_id", $role_id)->delete();
+        // Permission::where("s_role_id", $role_id)->delete();
         foreach ($routes as $key => $value) {
-                $permission = new Permission();
-                $permission->s_role_id  = $role_id;
-                $permission->s_route_id = $value["route_id"];
-                $permission->created_by = auth()->user()->user_id;
-                $permission->created_date = date("Y-m-d H:i:s");
-                $permission->create = $value["create"] ? "y" : "t";
-                $permission->read = "y";
-                $permission->update = "y";
-                $permission->delete = "y";
-                $permission->save();
+            Permission::create([
+                's_role_id'     => $role_id,
+                's_route_id'    => $value["route_id"],
+                'created_by'    => auth()->user()->user_id,
+                'created_date'  => date("Y-m-d H:i:s"),
+                'create'        => $value["create"] ? "y" : "t",
+                'read'          => $value["read"] ? "y" : "t",
+                'update'        => $value["update"] ? "y" : "t",
+                'delete'        => $value["delete"] ? "y" : "t"
+            ]);
 
             $children = $value["children"];
             foreach ($children as $key2 => $value2) {
-                $permission = new Permission();
-                $permission->s_role_id  = $role_id;
-                $permission->s_route_id = $value2["route_id"];
-                $permission->created_by = auth()->user()->user_id;
-                $permission->created_date = date("Y-m-d H:i:s");
-                $permission->create = $value["create"] ? "y" : "t";
-                $permission->read = $value["read"] ? "y" : "t";
-                $permission->update = $value["update"] ? "y" : "t";
-                $permission->delete = $value["delete"] ? "y" : "t";
-                $permission->save();
+                Permission::create([
+                    's_role_id'     => $role_id,
+                    's_route_id'    => $value2["route_id"],
+                    'created_by'    => auth()->user()->user_id,
+                    'created_date'  => date("Y-m-d H:i:s"),
+                    'create'        => $value2["create"] ? "y" : "t",
+                    'read'          => $value2["read"] ? "y" : "t",
+                    'update'        => $value2["update"] ? "y" : "t",
+                    'delete'        => $value2["delete"] ? "y" : "t"
+                ]);
             }
         }
     }
