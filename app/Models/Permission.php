@@ -20,7 +20,7 @@ class Permission extends Model
 
     function routes(){
       return $this->hasOne('App\Models\Routes', 'route_id', 's_route_id')
-                      ->select('route_id', 'route_level', 'route_path', 's_route_id')
+                      ->select('route_id', 'route_level', 'route_path', 's_route_id', 'route', 'read', 'update', 'delete')
                       ->where('route_aktif', 'y');
     }
 }

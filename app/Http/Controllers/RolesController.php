@@ -268,7 +268,7 @@ class RolesController extends Controller
 
     public function setPermission($role_id, $routes)
     {
-        // Permission::where("s_role_id", $role_id)->delete();
+        Permission::where("s_role_id", $role_id)->delete();
         foreach ($routes as $key => $value) {
             Permission::create([
                 's_role_id'     => $role_id,
