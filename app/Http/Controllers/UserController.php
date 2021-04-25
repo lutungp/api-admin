@@ -129,7 +129,7 @@ class UserController extends Controller
             $user = User::find($id);
             $user->user_aktif = 't';
             $user->disabled_by = auth()->user()->user_id;
-            $bahan->disabled_date = date("Y-m-d H:i:s");
+            $user->disabled_date = date("Y-m-d H:i:s");
             $user->save();
         } catch (\Throwable $th) {
             $res["status"] = "failure";
