@@ -31,4 +31,10 @@ class Produk extends Model
         return $this->hasOne(Satuan::class, 'satuan_id', 'm_satuan_id')
                         ->select(['satuan_id', 'satuan_kode', 'satuan_nama']);
     }
+
+    public function kategori()
+    {
+        return $this->hasOne(ProdKategori::class, 'prodkategori_id', 'm_kategori_id')
+                        ->select(['prodkategori_id', 'prodkategori_kode', 'prodkategori_nama']);
+    }
 }

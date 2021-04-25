@@ -50,7 +50,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->delete('bahan/{id}', 'BahanController@deleteBahan');
 
     $router->get('produk', 'ProdukController@getProduk');
+    $router->get('produklist', 'ProdukController@getProdukList');
     $router->post('produk', 'ProdukController@createProduk');
     $router->put('produk/{id}', 'ProdukController@updateProduk');
     $router->delete('produk/{id}', 'ProdukController@deleteProduk');
+
+    $router->get('prodkategori', 'ProdKategoriController@getProdKategori');
+    $router->get('prodkategorilist', 'ProdKategoriController@getProdKategoriList');
+    $router->post('prodkategori', 'ProdKategoriController@createProdKategori');
+    $router->put('prodkategori/{id}', 'ProdKategoriController@updateProdKategori');
+    $router->delete('prodkategori/{id}', 'ProdKategoriController@deleteProdKategori');
 });

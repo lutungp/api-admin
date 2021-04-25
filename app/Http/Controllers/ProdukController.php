@@ -31,7 +31,9 @@ class ProdukController extends Controller
                 "produk_kode" => $value->produk_kode,
                 "produk_nama" => $value->produk_nama,
                 "m_satuan_id" => $value->m_satuan_id,
-                "satuan_nama" => $value->satuan_nama
+                "satuan_nama" => $value->satuan->satuan_nama,
+                "m_kategori_id" => $value->m_kategori_id,
+                "prodkategori_nama" => $value->kategori->prodkategori_nama
             ];
         }
 
