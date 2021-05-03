@@ -61,7 +61,9 @@ class AuthController extends Controller
 
         $userpermission = $dataUser->role->permission;
         $dataPermission = [];
+        $parent = [];
         foreach ($userpermission as $key => $value) {
+            $parent[] = $value->read == 'y' ? $value->routes->s_route_id : 0;
             $dataPermission[] = [
                 "sRouteId" => $value->s_route_id,
                 "path" => $value->routes->route_path,
@@ -75,6 +77,19 @@ class AuthController extends Controller
                 "permission4" => $value->permission_4,
             ];
         }
+
+        $dataPermission = array_map(function ($var) use ($parent)
+                            {
+                                $route_id = $var["sRouteId"];
+                                if (in_array($route_id, $parent)) {
+                                    $var["create"] = 'y';
+                                    $var["read"] = 'y';
+                                    $var["update"] = 'y';
+                                    $var["delete"] = 'y';
+                                }
+
+                                return $var;
+                            }, $dataPermission);
 
         $data["user"] = [
             "roles" => ['admin'],
