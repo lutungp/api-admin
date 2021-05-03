@@ -23,8 +23,7 @@ class UserController extends Controller
                 "user_id" => $value->user_id,
                 "user_kode" => $value->user_kode,
                 "name" => $value->name,
-                "s_role_id" => $value->s_role_id,
-                "role_nama" => $value->role->role_nama
+                "s_role_id" => $value->s_role_id
             ];
         }
 
@@ -36,8 +35,7 @@ class UserController extends Controller
 
     public function createUsers(Request $request)
     {
-        $input = $request["user"];
-
+        $input = $request->only('user_id', 'user_kode', 'name', 's_role_id', 'role_nama', 'password');
         $validator = Validator::make($input, [
             'name' => 'required|min:3|max:100|unique:users,name',
             's_role_id' => 'required',
@@ -82,7 +80,7 @@ class UserController extends Controller
 
     public function updateUsers(Request $request)
     {
-        $input = $request["user"];
+        $input = $request->only('user_id', 'user_kode', 'name', 's_role_id', 'role_nama', 'password');
 
         $user_id = $input["user_id"];
         $validator = Validator::make($input, [

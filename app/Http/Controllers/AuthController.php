@@ -91,7 +91,7 @@ class AuthController extends Controller
                                 return $var;
                             }, $dataPermission);
 
-        $data["user"] = [
+        $data["data"] = [
             "roles" => ['admin'],
             "name"  => isset($userinfo->userinfo_nama) ? $userinfo->userinfo_nama : "",
             "avatar" => "",

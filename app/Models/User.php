@@ -24,7 +24,7 @@ class User extends Model implements JWTSubject, AuthenticatableContract
     public $timestamps = false;
 
     protected $fillable = [
-        'user_kode', 'user_nama',
+        'user_kode', 'user_nama', 'user_aktif', 'disabled_by', 'disabled_date'
     ];
 
     /**

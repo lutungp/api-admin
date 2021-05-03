@@ -74,7 +74,7 @@ $app->configure('app');
 
 $app->middleware([
     // App\Http\Middleware\ExampleMiddleware::class
-    Fruitcake\Cors\HandleCors::class
+    'Nord\Lumen\Cors\CorsMiddleware',
 ]);
 
 $app->routeMiddleware([
@@ -97,7 +97,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 
-$app->register(Fruitcake\Cors\CorsServiceProvider::class);
+$app->register('Nord\Lumen\Cors\CorsServiceProvider');
 
 $app->register(\KitLoong\MigrationsGenerator\MigrationsGeneratorServiceProvider::class);
 /*
@@ -116,7 +116,5 @@ $app->router->group([
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
-
-$app->configure('cors');
 
 return $app;
