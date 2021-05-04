@@ -72,8 +72,7 @@ class User extends Model implements JWTSubject, AuthenticatableContract
 	}
 
     function role(){
-		return $this->hasOne('App\Models\Roles', 'role_id', 's_role_id')
-                    ->where('role_aktif', 'y');
+		return $this->hasOne('App\Models\Roles', 'role_id', 's_role_id');
 	}
 
 }

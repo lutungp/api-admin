@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Activity;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,15 +17,34 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        $users = User::where('user_aktif', 'y')->paginate(20);
+        $filter = $request->get('filter');
+        $role = $request->get('role');
+        $users = User::where('user_aktif', 'y');
+        if ($filter <> '') {
+            $users = $users->whereRaw("UPPER(name) LIKE '%" . strtoupper($filter) . "%'");
+        }
+
+        $users = $users->paginate(20);
         $dataUser  = [];
         foreach ($users->items() as $key => $value) {
-            $dataUser[] = [
-                "user_id" => $value->user_id,
-                "user_kode" => $value->user_kode,
-                "name" => $value->name,
-                "s_role_id" => $value->s_role_id
-            ];
+            if ($role == '') {
+                $dataUser[] = [
+                    "user_id" => $value->user_id,
+                    "user_kode" => $value->user_kode,
+                    "name" => $value->name,
+                    "s_role_id" => $value->s_role_id,
+                    "role_nama" => $value->role->role_nama,
+                ];
+            } else if ($value->role->role_nama == $role) {
+                $dataUser[] = [
+                    "user_id" => $value->user_id,
+                    "user_kode" => $value->user_kode,
+                    "name" => $value->name,
+                    "s_role_id" => $value->s_role_id,
+                    "role_nama" => $value->role->role_nama,
+                ];
+            }
+
         }
 
         $data["users"] = $dataUser;
@@ -41,13 +61,13 @@ class UserController extends Controller
             's_role_id' => 'required',
             'password' => 'required|min:3',
         ], [
-            'name.required' => 'Nama tidak boleh kosong',
-            'name.min' => 'Nama minimal 3 karakter',
-            'name.max' => 'Nama maksimal 100 karakter',
-            'name.unique' => 'Nama ' . $input['name'] . ' telah digunakan, masukkan nama lain',
-            's_role_id.required' => 'User Role tidak boleh kosong',
-            'password.required' => 'Password tidak boleh kosong',
-            'password.min' => 'Password minimal 3 karakter',
+            'name.required' => 'Name cannot be empty',
+            'name.min' => 'The name should be at least 3 characters and a maximum of 100 characters',
+            'name.max' => 'The name should be at least 3 characters and a maximum of 100 characters',
+            'name.unique' => 'The name ' . $input['name'] . ' is already using',
+            's_role_id.required' => 'Role cannot be empty',
+            'password.required' => 'Password cannot be empty',
+            'password.min' => 'Password of at least 3 characters',
         ]);
 
         if ($validator->fails()) {
@@ -87,9 +107,13 @@ class UserController extends Controller
             'name' => 'required|min:3|max:100|unique:users,name,' . $user_id . ',user_id',
             'password' => 'required|min:3',
         ], [
-            'name.required' => 'Nama tidak boleh kosong',
-            'password.required' => 'Password tidak boleh kosong',
-            'password.min' => 'Password minimal 3 karakter',
+            'name.required' => 'Name cannot be empty',
+            'name.min' => 'The name should be at least 3 characters and a maximum of 100 characters',
+            'name.max' => 'The name should be at least 3 characters and a maximum of 100 characters',
+            'name.unique' => 'The name ' . $input['name'] . ' is already using',
+            's_role_id.required' => 'Role cannot be empty',
+            'password.required' => 'Password cannot be empty',
+            'password.min' => 'Password of at least 3 characters',
         ]);
 
         if ($validator->fails()) {
@@ -135,5 +159,15 @@ class UserController extends Controller
         }
 
         return response()->json($res);
+    }
+
+    public function getActivity(Request $request)
+    {
+        $user = auth()->user();
+        $data = Activity::where('m_user_id', $user->user_id)
+                        ->where('activity_status', 'NEW')
+                        ->get();
+
+        return response()->json($data, 200);
     }
 }

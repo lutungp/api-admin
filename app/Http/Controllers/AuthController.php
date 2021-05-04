@@ -59,24 +59,24 @@ class AuthController extends Controller
         $userinfo = $dataUser->info;
         $userrole = $dataUser->role;
 
-        $userpermission = $dataUser->role->permission;
+        // $userpermission = $dataUser->role->permission;
         $dataPermission = [];
         $parent = [];
-        foreach ($userpermission as $key => $value) {
-            $parent[] = $value->read == 'y' ? $value->routes->s_route_id : 0;
-            $dataPermission[] = [
-                "sRouteId" => $value->s_route_id,
-                "path" => $value->routes->route_path,
-                "create" => $value->create,
-                "read" => $value->read,
-                "update" => $value->update,
-                "delete" => $value->delete,
-                "permission1" => $value->permission_1,
-                "permission2" => $value->permission_2,
-                "permission3" => $value->permission_3,
-                "permission4" => $value->permission_4,
-            ];
-        }
+        // foreach ($userpermission as $key => $value) {
+        //     $parent[] = $value->read == 'y' ? $value->routes->s_route_id : 0;
+        //     $dataPermission[] = [
+        //         "sRouteId" => $value->s_route_id,
+        //         "path" => $value->routes->route_path,
+        //         "create" => $value->create,
+        //         "read" => $value->read,
+        //         "update" => $value->update,
+        //         "delete" => $value->delete,
+        //         "permission1" => $value->permission_1,
+        //         "permission2" => $value->permission_2,
+        //         "permission3" => $value->permission_3,
+        //         "permission4" => $value->permission_4,
+        //     ];
+        // }
 
         $dataPermission = array_map(function ($var) use ($parent)
                             {
@@ -92,7 +92,7 @@ class AuthController extends Controller
                             }, $dataPermission);
 
         $data["data"] = [
-            "roles" => ['admin'],
+            "role" => $userrole->role_nama,
             "name"  => isset($userinfo->userinfo_nama) ? $userinfo->userinfo_nama : "",
             "avatar" => "",
             "introduction" => "",
