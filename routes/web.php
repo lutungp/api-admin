@@ -43,4 +43,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('activity/{id}', 'ActivityController@updateActivity');
     $router->delete('activity/{id}', 'ActivityController@deleteActivity');
     $router->put('activity/confirm/{id}', 'ActivityController@confirmActivity');
+
+    $router->get('customer', 'CustomerController@getCustomer');
+    $router->post('customer', 'CustomerController@createCustomer');
+    $router->put('customer/{id}', 'CustomerController@updateCustomer');
+    $router->delete('customer/{id}', 'CustomerController@deleteCustomer');
+    $router->get('customerdetail/{id}', 'CustomerController@getCustomerDetail');
+
+    $router->post('customercall/{id}', 'CallController@createCustomerCall');
+
 });
