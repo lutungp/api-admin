@@ -171,8 +171,26 @@ class CustomerController extends Controller
         return response()->json($dataSave);
     }
 
-    public function deleteCustomer () {
+    public function deleteCustomer ($id) {
+        $res["status"] = "success";
+        try {
+            $customer = Customer::find($id);
 
+            if ($customer->calls->count() > 0) {
+                $res["status"] = "failure";
+                return response()->json($res, 500);
+            }
+
+            $customer->customer_aktif = 't';
+            $customer->disabled_by = auth()->user()->user_id;
+            $customer->disabled_date = date('Y-m-d H:i:s');
+            $customer->save();
+        } catch (\Throwable $th) {
+            $res["status"] = "failure";
+            return response()->json($res, 500);
+        }
+
+        return response()->json($res);
     }
 
 }

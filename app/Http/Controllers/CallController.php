@@ -194,7 +194,7 @@ class CallController extends Controller
         return response()->json($res);
     }
 
-    public function createCalls(Request $request)
+    public function createCall(Request $request)
     {
         $input = $request->only('call_subject', 'call_description', 'call_temperature', 'call_offerwa', 'call_interesting', 'call_status_direction',
                                 'call_status', 'call_start_date', 'call_hourduration', 'call_minutesduration', 't_relatedproj_id', 'm_userowner_id',
