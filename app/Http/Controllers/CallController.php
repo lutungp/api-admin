@@ -265,4 +265,11 @@ class CallController extends Controller
 
         return response()->json($res);
     }
+
+    public function getCallCustomer($id)
+    {
+        $call = Call::where('m_customerrelated_id', $id)->orderBy('created_date', 'DESC')->get();
+
+        return response()->json($call);
+    }
 }

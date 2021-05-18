@@ -56,4 +56,5 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->put('calls/{id}', 'CallController@updateCall');
     $router->delete('calls/{id}', 'CallController@deleteCall');
     $router->get('calls/edit/{id}', 'CallController@getCallDetail');
+    $router->get('calls/customer/{id}', 'CallController@getCallCustomer');
 });

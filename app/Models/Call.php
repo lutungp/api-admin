@@ -17,7 +17,7 @@ class Call extends Model
     protected $primaryKey = 'call_id';
     public $timestamps = false;
 
-    protected $hidden = ['call_aktif', 'created_by', 'created_date', 'updated_by', 'updated_date', 'disabled_by', 'disabled_date'];
+    protected $hidden = ['call_aktif', 'created_by', 'created_date', 'updated_by', 'updated_date', 'disabled_by', 'disabled_date', 'revised'];
 
     /**
      * Get the user associated with the Call
