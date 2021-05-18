@@ -48,8 +48,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('customer', 'CustomerController@createCustomer');
     $router->put('customer/{id}', 'CustomerController@updateCustomer');
     $router->delete('customer/{id}', 'CustomerController@deleteCustomer');
-    $router->get('customerdetail/{id}', 'CustomerController@getCustomerDetail');
+    $router->get('customer/edit/{id}', 'CustomerController@getCustomerDetail');
 
     $router->post('customercall/{id}', 'CallController@createCustomerCall');
-
+    $router->get('calls', 'CallController@getCalls');
+    $router->post('calls', 'CallController@createCall');
+    $router->put('calls/{id}', 'CallController@updateCall');
+    $router->delete('calls/{id}', 'CallController@deleteCall');
+    $router->get('calls/edit/{id}', 'CallController@getCallDetail');
 });
