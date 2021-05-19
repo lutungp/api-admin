@@ -268,8 +268,33 @@ class CallController extends Controller
 
     public function getCallCustomer($id)
     {
-        $call = Call::where('m_customerrelated_id', $id)->orderBy('created_date', 'DESC')->get();
+        $qcall = Call::where('m_customerrelated_id', $id)->orderBy('created_date', 'DESC')->get();
+        $datacall = [];
+        foreach ($qcall as $key => $value) {
+            $datacall[] = [
+                'call_id'           => $value->call_id,
+                'call_description'  => $value->call_description,
+                'call_hourduration' => $value->call_hourduration,
+                'call_interesting'  => $value->call_interesting,
+                'call_key'          => $value->call_key,
+                'call_minutesduration' => $value->call_minutesduration,
+                'call_offerwa'      => $value->call_offerwa,
+                'call_start_date'   => $value->call_start_date,
+                'call_start_date2'   => date('d M Y', strtotime($value->call_start_date)),
+                'call_status'       => $value->call_status,
+                'call_status_direction' => $value->call_status_direction,
+                'call_subject'      => $value->call_subject,
+                'call_temperature'  => $value->call_temperature,
+                'm_customerrelated_id' => $value->m_customerrelated_id,
+                'm_userowner_id'    => $value->m_userowner_id,
+                't_relateddeal_id'  => $value->t_relateddeal_id,
+                't_relatedissue_id' => $value->t_relatedissue_id,
+                't_relatedproj_id'  => $value->t_relatedproj_id,
+                't_relatedticket_id' => $value->t_relatedticket_id,
+                'created_date'  => date('d M Y, H:i', strtotime($value->created_date))
+            ];
+        }
 
-        return response()->json($call);
+        return response()->json($datacall);
     }
 }
