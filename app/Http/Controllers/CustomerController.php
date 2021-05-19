@@ -206,13 +206,33 @@ class CustomerController extends Controller
             'file.mimes' => "File type must be xlsx,xls,csv"
         ]);
 
+        $res["status"] = "success";
         if ($request->hasFile('file')) {
             $data = Excel::toArray(new CustomerImport(), $request->file('file'));
 
 
             foreach ($data[0] as $key => $value) {
 
+                $dataSave = new Customer();
+
+                $dataSave->customer_key = Str::random(40);
+                $dataSave->customer_solutation = $value['solutations'];
+                $dataSave->customer_lastname   = $value['last_name'];
+                $dataSave->customer_email      = $value['customer_email'];
+                $dataSave->customer_firstname  = $value['first_name'];
+                $dataSave->customer_address    = $value['address'];
+
+                $dataSave->customer_phone1    = $value['mobile_phone'];
+                $dataSave->customer_phone2    = $value['work_phone'];
+                $dataSave->customer_job       = $value['job_title'];
+
+                $dataSave->created_by = auth()->user()->user_id;
+                $dataSave->created_date = date("Y-m-d H:i:s");
+
+                $dataSave->save();
             }
+
+            return response()->json($res, 200);
         }
     }
 

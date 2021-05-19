@@ -14,6 +14,7 @@
     <tbody>
     @foreach($customer as $val)
         <tr>
+            <td>{{ $val->customer_solutation }}</td>
             <td>{{ $val->customer_firstname }}</td>
             <td>{{ $val->customer_lastname }}</td>
             <td>{{ $val->customer_address }}</td>
