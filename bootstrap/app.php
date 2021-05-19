@@ -48,6 +48,10 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+$app->singleton('filesystem', function ($app) {
+    return $app->loadComponent('filesystems', 'Illuminate\Filesystem\FilesystemServiceProvider', 'filesystem');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
@@ -100,6 +104,8 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register('Nord\Lumen\Cors\CorsServiceProvider');
 
 $app->register(\KitLoong\MigrationsGenerator\MigrationsGeneratorServiceProvider::class);
+
+$app->register(\Maatwebsite\Excel\ExcelServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

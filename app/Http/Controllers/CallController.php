@@ -45,7 +45,7 @@ class CallController extends Controller
         return response()->json($res, 200);
     }
 
-    public function createCustomerCall($customer_id, Request $request)
+    public function createCustomerCall($id, Request $request)
     {
         $input = $request->only('call_subject', 'call_description', 'call_temperature', 'call_offerwa', 'call_interesting', 'call_status_direction',
                                 'call_status', 'call_start_date', 'call_hourduration', 'call_minutesduration', 't_relatedproj_id', 'm_userowner_id',
@@ -68,7 +68,7 @@ class CallController extends Controller
         }
 
         $res["status"] = "success";
-        try {
+        // try {
             $dataSave = new Call();
 
             $dataSave->call_key = Str::random(40);
@@ -85,16 +85,16 @@ class CallController extends Controller
             $dataSave->call_minutesduration = $input['call_minutesduration'];
             $dataSave->t_relatedproj_id     = $input['t_relatedproj_id'];
             $dataSave->m_userowner_id       = $input['m_userowner_id'];
-            $dataSave->m_customerrelated_id = $customer_id;
+            $dataSave->m_customerrelated_id = $id;
 
             $dataSave->created_by = auth()->user()->user_id;
             $dataSave->created_date = date("Y-m-d H:i:s");
             $dataSave->save();
 
-        } catch (\Throwable $th) {
-            $res["status"] = "failure";
-            return response()->json($res, 500);
-        }
+        // } catch (\Throwable $th) {
+        //     $res["status"] = "failure";
+        //     return response()->json($res, 500);
+        // }
 
         $res["status"] = "successs";
         return response()->json($res);

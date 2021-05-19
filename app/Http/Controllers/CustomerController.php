@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Imports\CustomerImport;
+use App\Exports\CustomerExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -191,6 +194,34 @@ class CustomerController extends Controller
         }
 
         return response()->json($res);
+    }
+
+    public function importCustomer(Request $request)
+    {
+        $input = $request->only('file');
+        $validator = Validator::make($request->all(), [
+            'file' => 'max:8000|mimes:xlsx,xls,csv',
+        ], [
+            'file.max' => "Upload Maksimal 8 MB",
+            'file.mimes' => "File type must be xlsx,xls,csv"
+        ]);
+
+        if ($request->hasFile('file')) {
+            $data = Excel::toArray(new CustomerImport(), $request->file('file'));
+
+
+            foreach ($data[0] as $key => $value) {
+
+            }
+        }
+    }
+
+    public function exportCustomer(Request $request)
+    {
+        (new CustomerExport)->store('customer-exported.xlsx', 'public_dokumen');
+
+        $res['url'] = env('APP_URL') . '/dokumen/customer-exported.xlsx';
+        return response()->json($res, 200);
     }
 
 }

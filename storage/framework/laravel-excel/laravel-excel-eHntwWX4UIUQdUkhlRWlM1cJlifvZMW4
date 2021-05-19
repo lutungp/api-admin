@@ -1,0 +1,169 @@
+<html>
+    <head>
+        <style>
+            body {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            }
+
+            .infojual {
+                width : 100%;
+                font-size: 12px;
+                border-style: solid;
+                border-width: thin;
+                font-family: 'Courier New', Courier, monospace;
+            }
+
+            .infojual, tr, th, td {
+                border : 1px solid #afafaf;
+                border-style: solid;
+                border-width: thin;
+            }
+
+            table tr {
+                page-break-inside: always;
+            }
+
+            table tr td {
+                page-break-inside: always;
+            }
+
+            tr > td {
+                padding: 5px;
+                vertical-align: top;
+            }
+
+            .text-center {
+                text-align : center;
+            }
+
+            .btn {
+                background-color: #4CAF50; /* Green */
+                border: none;
+                color: white;
+                padding: 5px 15px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+            }
+
+            .page {
+                width: 350mm;
+                /* min-height: 297mm; */
+                /* padding: 20mm; */
+                margin: 10mm auto;
+                border: 1px #D3D3D3 solid;
+                border-radius: 5px;
+                background: white;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            }
+            .subpage {
+                padding: 1cm;
+                /* border: 1px solid; */
+                min-height: 257mm;
+                /* outline: 2cm #FFEAEA solid; */
+            }
+
+            @media  print {
+                html, body {
+                    width: 210mm;
+                    height: 297mm;
+                }
+                .page {
+                    margin: 0;
+                    border: initial;
+                    border-radius: initial;
+                    width: initial;
+                    min-height: initial;
+                    box-shadow: initial;
+                    background: initial;
+                    page-break-after: always;
+                }
+                .btn {
+                    display : none;
+                }
+            }
+
+        </style>
+    </head>
+    <body>
+        <p style="text-align: center;">Laporan Zakat<br>09-05-2021 - 09-05-2021<h3></h3></p>
+        <div class="text-center"><button class="btn btn-success" type="button" onclick="window.print()">Print</button></div>
+
+        <div class="book">
+            <div class="page">
+                <div class="subpage">
+                    <table class="infojual" cellspacing="0">
+                        <thead>
+                            <tr style="background-color: #ffc979;">
+                                <th class="text-center" rowspan="2" style="width: 50px;">No.</th>
+                                <th class="text-center" rowspan="2">No. Kwitansi</th>
+                                <th class="text-center" rowspan="2">Nama</th>
+                                <th class="text-center" rowspan="2">Alamat</th>
+                                <th class="text-center" colspan="3">Zakat Fitrah</th>
+                                <th class="text-center" colspan="2">Zakat Maal</th>
+                                <th class="text-center" colspan="2">Shodaqoh / Infaq</th>
+                                <th class="text-center" colspan="2">Fidyah</th>
+                            </tr>
+                            <tr style="background-color: #ffc979;">
+                                <th class="text-center">Jiwa/Orang</th>
+                                <th class="text-center">Kg</th>
+                                <th class="text-center">Rupiah</th>
+
+                                <th class="text-center">Kg</th>
+                                <th class="text-center">Rupiah</th>
+
+                                <th class="text-center">Kg</th>
+                                <th class="text-center">Rupiah</th>
+
+                                <th class="text-center">Kg</th>
+                                <th class="text-center">Rupiah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                                                    <tr>
+                                <td colspan="4" align="right">Jumlah</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+
+                                <td>0</td>
+                                <td>0</td>
+
+                                <td>0</td>
+                                <td>0</td>
+
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table width="50%" style="border: none;" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td style="border: none;" width="50%" align="center">Kordinator Petugas</td>
+                            <td style="border: none;" >Total Beras </td>
+                            <td style="border: none;" width="30%" align="right">0 Kg</td>
+                        </tr>
+                        <tr>
+                            <td style="border: none;" width="50%" align="center">&nbsp;</td>
+                            <td style="border: none;" >Total Uang Rp. </td>
+                            <td style="border: none;" width="30%" align="right">0</td>
+                        </tr>
+                        <tr>
+                            <td style="border: none;" width="50%" align="center">&nbsp;</td>
+                            <td style="border: none;" width="50%">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td style="border: none;" width="50%" align="center">&nbsp;</td>
+                            <td style="border: none;" width="50%">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td style="border: none;" width="50%" align="center">(......................)</td>
+                            <td style="border: none;" width="50%">&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
