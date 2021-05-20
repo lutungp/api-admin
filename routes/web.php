@@ -59,4 +59,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->delete('calls/{id}', 'CallController@deleteCall');
     $router->get('calls/edit/{id}', 'CallController@getCallDetail');
     $router->get('calls/customer/{id}', 'CallController@getCallCustomer');
+    $router->post('calls/import', 'CallController@importCall');
+    $router->get('calls/export', 'CallController@exportCall');
+
 });

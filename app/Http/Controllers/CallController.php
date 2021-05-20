@@ -297,4 +297,15 @@ class CallController extends Controller
 
         return response()->json($datacall);
     }
+
+    public function importCall(Request $request)
+    {
+
+    }
+
+    public function exportCall(Request $request)
+    {
+
+    }
+
 }

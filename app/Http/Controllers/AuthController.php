@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use  App\Models\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -92,12 +93,13 @@ class AuthController extends Controller
                             }, $dataPermission);
 
         $data["data"] = [
-            "role" => $userrole->role_nama,
-            "name"  => isset($userinfo->userinfo_nama) ? $userinfo->userinfo_nama : "",
-            "avatar" => "",
+            "role"         => $userrole->role_nama,
+            "name"         => isset($userinfo->userinfo_nama) ? $userinfo->userinfo_nama : "",
+            "avatar"       => "",
             "introduction" => "",
-            "email" => isset($userinfo->userinfo_email) ? $userinfo->userinfo_email : "",
-            "permission" => $dataPermission
+            "email"        => isset($userinfo->userinfo_email) ? $userinfo->userinfo_email : "",
+            "permission"   => $dataPermission,
+            "socktoken"  => Str::random(15)
         ];
 
         return response()->json($data);
