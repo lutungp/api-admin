@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -29,19 +30,21 @@ class UserController extends Controller
         foreach ($users->items() as $key => $value) {
             if ($role == '') {
                 $dataUser[] = [
-                    "user_id" => $value->user_id,
+                    "user_id"   => $value->user_id,
                     "user_kode" => $value->user_kode,
-                    "name" => $value->name,
+                    "name"      => $value->name,
                     "s_role_id" => $value->s_role_id,
                     "role_nama" => $value->role->role_nama,
+                    "socktoken" => $value->socktoken,
                 ];
             } else if ($value->role->role_nama == $role) {
                 $dataUser[] = [
-                    "user_id" => $value->user_id,
+                    "user_id"   => $value->user_id,
                     "user_kode" => $value->user_kode,
-                    "name" => $value->name,
+                    "name"      => $value->name,
                     "s_role_id" => $value->s_role_id,
                     "role_nama" => $value->role->role_nama,
+                    "socktoken" => $value->socktoken,
                 ];
             }
 
@@ -85,6 +88,8 @@ class UserController extends Controller
             $dataSave->name = $input["name"];
             $dataSave->password = Hash::make($input["password"]);
             $dataSave->s_role_id = $input["s_role_id"];
+            $dataSave->socktoken = Str::random(20);
+
             $dataSave->created_by = auth()->user()->user_id;
             $dataSave->created_date = date("Y-m-d H:i:s");
             $dataSave->save();
@@ -131,6 +136,11 @@ class UserController extends Controller
             $dataSave->name = $input["name"];
             $dataSave->password = Hash::make($input["password"]);
             $dataSave->s_role_id = $input["s_role_id"];
+
+            if ($dataSave->socktoken == null) {
+                $dataSave->socktoken = Str::random(20);
+            }
+
             $dataSave->updated_by = auth()->user()->user_id;
             $dataSave->updated_date = date("Y-m-d H:i:s");
             $dataSave->revised = $dataSave->revised+1;

@@ -52,7 +52,7 @@ class AuthController extends Controller
 
         // return $this->respondWithToken($token);
         $dataAuth['token'] = $token;
-        $dataAuth['socktoken'] = Str::random(15);
+        $dataAuth['socktoken'] = Auth::user()->socktoken;
         return response()->json($dataAuth, 200);
     }
 
