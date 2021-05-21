@@ -50,7 +50,10 @@ class AuthController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        // return $this->respondWithToken($token);
+        $dataAuth['token'] = $token;
+        $dataAuth['socktoken'] = Str::random(15);
+        return response()->json($dataAuth, 200);
     }
 
     public function info(Request $request)
@@ -98,8 +101,7 @@ class AuthController extends Controller
             "avatar"       => "",
             "introduction" => "",
             "email"        => isset($userinfo->userinfo_email) ? $userinfo->userinfo_email : "",
-            "permission"   => $dataPermission,
-            "socktoken"  => Str::random(15)
+            "permission"   => $dataPermission
         ];
 
         return response()->json($data);
